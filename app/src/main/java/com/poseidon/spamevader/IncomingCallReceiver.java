@@ -13,6 +13,7 @@ import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 
 public class IncomingCallReceiver extends BroadcastReceiver {
 
@@ -21,47 +22,21 @@ public class IncomingCallReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
-            Log.d(TAG, "Inside PhoneRinging State");
-
             String incomingNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
-            Log.d(TAG, "THe incoming number is " + incomingNumber);
+            Log.d(TAG, "Incoming Number: " + incomingNumber);
 
             if (incomingNumber != null) {
                 TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
                 if (isASpamCall(context, incomingNumber)) {
                     try {
-                        Log.d(TAG, "Blocked Spam Call from " + incomingNumber);
+                        Log.d(TAG, "BlockedCall from: " + incomingNumber);
                         //How to end call programmatically
                         //https://stackoverflow.com/questions/18065144/end-call-in-android-programmatically
                         Method method = telephonyManager.getClass().getMethod("endCall", null);
                         method.invoke(telephonyManager);
 
-                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-
-                        Notification notificationCompat = new NotificationCompat.Builder(context, Constants.BLOCKED_NOTIFICATION_CHANNEL_ID)
-                                .setContentTitle("Blocked Spam Call")
-                                .setContentText(incomingNumber)
-                                .setSmallIcon(R.drawable.announcement_black)
-                                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.announcement_black))
-                                .build();
-
-                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                            NotificationChannel notificationChannel = new NotificationChannel(Constants.BLOCKED_NOTIFICATION_CHANNEL_ID,
-                                    Constants.BLOCKED_NOTIFICATION_CHANNEL_NAME,
-                                    NotificationManager.IMPORTANCE_LOW);
-
-                            notificationChannel.enableVibration(false);
-                            notificationChannel.enableLights(false);
-
-                            if (notificationManager != null) {
-                                notificationManager.createNotificationChannel(notificationChannel);
-                            }
-                        }
-
-                        if (notificationManager != null) {
-                            notificationManager.notify((int) System.currentTimeMillis(), notificationCompat);
-                        }
+                        notifyUser(context, incomingNumber);
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -71,10 +46,39 @@ public class IncomingCallReceiver extends BroadcastReceiver {
         }
     }
 
+    private void notifyUser(Context context, String incomingNumber) {
+        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        Notification notificationCompat = new NotificationCompat.Builder(context, Constants.BLOCKED_NOTIFICATION_CHANNEL_ID)
+                .setContentTitle("BlockedCall From")
+                .setContentText(incomingNumber)
+                .setSmallIcon(R.drawable.announcement_black)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.announcement_black))
+                .build();
+
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel notificationChannel = new NotificationChannel(Constants.BLOCKED_NOTIFICATION_CHANNEL_ID,
+                    Constants.BLOCKED_NOTIFICATION_CHANNEL_NAME,
+                    NotificationManager.IMPORTANCE_LOW);
+
+            notificationChannel.enableVibration(false);
+            notificationChannel.enableLights(false);
+
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(notificationChannel);
+            }
+        }
+
+        if (notificationManager != null) {
+            notificationManager.notify((int) System.currentTimeMillis(), notificationCompat);
+        }
+    }
+
     private boolean isASpamCall(Context context, String incomingNumber) {
         boolean isASpamCall = false;
-        for (String spamNumberStartsWith : new DatabaseHelper(context).getAllSpamNumbers()) {
-            if (spamNumberStartsWith != null && incomingNumber.startsWith("+" + spamNumberStartsWith)) {
+        final ArrayList<String> allSpamNumbers = new DatabaseHelper(context).getAllSpamNumbers();
+        for (int index = 0; index < allSpamNumbers.size(); index++) {
+            if (incomingNumber.startsWith("+" + allSpamNumbers.get(index))) {
                 isASpamCall = true;
             }
         }
