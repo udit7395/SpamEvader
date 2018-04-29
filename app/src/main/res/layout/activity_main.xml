@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_activity_ll"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.poseidon.spamevader.MainActivity">
+
+
+    <EditText android:id="@+id/edit_text_regex"
+              android:layout_width="match_parent"
+              android:layout_height="40dp"
+              android:layout_margin="5dp"
+              android:hint="Enter the initial pattern eg 911401, 91120"
+              android:inputType="number"/>
+
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="45dp"
+                  android:layout_marginEnd="10dp"
+                  android:layout_marginStart="10dp"
+                  android:orientation="horizontal"
+                  android:weightSum="1">
+
+        <Button android:id="@+id/delete_all_btn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="0.5"
+                android:text="Delete All"/>
+
+
+        <Button android:id="@+id/submit_btn"
+                android:layout_width="150dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_weight="0.5"
+                android:text="SUBMIT"/>
+
+
+    </LinearLayout>
+
+    <View xmlns:android="http://schemas.android.com/apk/res/android"
+          android:layout_width="match_parent"
+          android:layout_height="1dp"
+          android:layout_margin="5dp"
+          android:background="#A9A9A9"/>
+
+    <ListView android:id="@+id/stored_regex_list_view"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_marginEnd="10dp"
+              android:layout_marginStart="10dp"/>
+
+</LinearLayout>
