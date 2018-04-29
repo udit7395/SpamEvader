@@ -1,12 +1,13 @@
 package com.poseidon.spamevader;
 
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -37,15 +38,31 @@ public class IncomingCallReceiver extends BroadcastReceiver {
                         Method method = telephonyManager.getClass().getMethod("endCall", null);
                         method.invoke(telephonyManager);
 
-                        NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(context);
-                        Notification notificationCompat = new NotificationCompat.Builder(context)
+                        NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+                        Notification notificationCompat = new NotificationCompat.Builder(context, Constants.BLOCKED_NOTIFICATION_CHANNEL_ID)
                                 .setContentTitle("Blocked Spam Call")
                                 .setContentText(incomingNumber)
                                 .setSmallIcon(R.drawable.announcement_black)
                                 .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.announcement_black))
                                 .build();
 
-                        notificationManagerCompat.notify((int) System.currentTimeMillis(), notificationCompat);
+                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                            NotificationChannel notificationChannel = new NotificationChannel(Constants.BLOCKED_NOTIFICATION_CHANNEL_ID,
+                                    Constants.BLOCKED_NOTIFICATION_CHANNEL_NAME,
+                                    NotificationManager.IMPORTANCE_LOW);
+
+                            notificationChannel.enableVibration(false);
+                            notificationChannel.enableLights(false);
+
+                            if (notificationManager != null) {
+                                notificationManager.createNotificationChannel(notificationChannel);
+                            }
+                        }
+
+                        if (notificationManager != null) {
+                            notificationManager.notify((int) System.currentTimeMillis(), notificationCompat);
+                        }
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
                     }
