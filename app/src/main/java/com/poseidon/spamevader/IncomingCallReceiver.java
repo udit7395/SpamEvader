@@ -13,9 +13,9 @@ import android.util.Log;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
-public class PhoneCallReceiver extends BroadcastReceiver {
+public class IncomingCallReceiver extends BroadcastReceiver {
 
-    private static final String TAG = PhoneCallReceiver.class.getName();
+    private static final String TAG = IncomingCallReceiver.class.getName();
 
     @Override
     public void onReceive(Context context, Intent intent) {
