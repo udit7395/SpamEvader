@@ -23,14 +23,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static final class TableSpam {
+    private static final class TableSpam {
 
-        public static final String TABLE_NAME = "spam";
+        private static final String TABLE_NAME = "spam";
 
-        public static final String _ID = "_id";
-        public static final String NUMBER = "number";
+        private static final String _ID = "_id";
+        private static final String NUMBER = "number";
 
-        public static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
+        private static final String CREATE_TABLE = "CREATE TABLE " + TABLE_NAME + " (" +
                 _ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 NUMBER + " TEXT)";
     }
