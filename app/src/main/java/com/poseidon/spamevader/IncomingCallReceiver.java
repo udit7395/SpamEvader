@@ -20,8 +20,7 @@ public class IncomingCallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        String stateStr = intent.getExtras().getString(TelephonyManager.EXTRA_STATE);
-        if (TelephonyManager.EXTRA_STATE_RINGING.equalsIgnoreCase(stateStr)) {
+        if (intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
             Log.d(TAG, "Inside PhoneRinging State");
 
             String incomingNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
