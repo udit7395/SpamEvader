@@ -6,7 +6,7 @@ android {
     defaultConfig {
         applicationId "com.poseidon.spamevader"
         minSdkVersion 19
-        targetSdkVersion 27
+        targetSdkVersion 25
         versionCode 201
         versionName "2.0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
