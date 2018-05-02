@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
                 new String[]{Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.CALL_PHONE,
                         Manifest.permission.MODIFY_PHONE_STATE},
-                7);
+                Constants.REQUEST_CODE);
     }
 
     private boolean didUserGivePermission() {
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         Log.d(TAG, "Got RQT CODE : " + requestCode);
-        if (requestCode == 7) {
+        if (requestCode == Constants.REQUEST_CODE) {
             if (didUserGivePermission()) {
                 Log.d(TAG, "User Gave Permission");
                 init();
