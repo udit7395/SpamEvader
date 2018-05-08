@@ -9,12 +9,13 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -22,8 +23,8 @@ public class MainActivity extends AppCompatActivity {
     private Button submitButton;
     private Button deleteAllButton;
     private EditText spamNumberEditText;
-    private ListView mListView;
-    private Adaptor mAdaptor;
+    private RecyclerView recyclerView;
+    private Adapter mAdaptor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,17 +56,17 @@ public class MainActivity extends AppCompatActivity {
         submitButton = (Button) findViewById(R.id.submit_btn);
         deleteAllButton = (Button) findViewById(R.id.delete_all_btn);
         spamNumberEditText = (EditText) findViewById(R.id.edit_text_regex);
-        mListView = (ListView) findViewById(R.id.stored_regex_list_view);
+        recyclerView = (RecyclerView) findViewById(R.id.stored_regex_recycler_view);
 
         submitButton.setOnClickListener(submitBtnPressedListener);
         deleteAllButton.setOnClickListener(deleteAllBtnPressedListener);
-        mListView.setOnItemClickListener(onListViewItemClickListener);
 
-        mAdaptor = new Adaptor(getApplicationContext(), MainActivity.this);
-        mAdaptor.clear();
-        mAdaptor.addAll(new DatabaseHelper(getApplicationContext()).getAllSpamNumbers());
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
+                DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+        mAdaptor = new Adapter(MainActivity.this, new DatabaseHelper(getApplicationContext()).getAllSpamNumbers());
 
-        mListView.setAdapter(mAdaptor);
+        recyclerView.setAdapter(mAdaptor);
     }
 
 
@@ -110,15 +111,7 @@ public class MainActivity extends AppCompatActivity {
                 new DatabaseHelper(getApplicationContext()).addSpamNumber(userSpamNumberInput);
                 mAdaptor.add(userSpamNumberInput);
                 spamNumberEditText.setText("");
-                mAdaptor.notifyDataSetChanged();
-             }
-        }
-    };
-
-    private AdapterView.OnItemClickListener onListViewItemClickListener = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-
+            }
         }
     };
 

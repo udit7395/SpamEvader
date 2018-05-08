@@ -47,7 +47,8 @@
           android:layout_margin="5dp"
           android:background="#A9A9A9"/>
 
-    <ListView android:id="@+id/stored_regex_list_view"
+    <android.support.v7.widget.RecyclerView
+              android:id="@+id/stored_regex_recycler_view"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
               android:layout_marginEnd="10dp"
