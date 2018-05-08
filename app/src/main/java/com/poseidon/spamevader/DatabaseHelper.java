@@ -88,6 +88,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return _Ids.get(0);
     }
 
+    public boolean doesUserInputExistsInDB(String userInput){
+        boolean doesUserInputExistsInDB = false;
+
+        String selection = TableSpam.NUMBER + "='" + userInput + "'";
+
+        Cursor cursor = getWritableDatabase().query(TableSpam.TABLE_NAME, null, selection,
+                null, null, null, null);
+
+        if (cursor != null) {
+            doesUserInputExistsInDB = cursor.getCount() != 0;
+
+            cursor.close();
+        }
+
+        return doesUserInputExistsInDB;
+    }
+
     public void deleteSingle(String spamNumber) {
         String selection = TableSpam.NUMBER + " = '" + spamNumber + "'";
         int status = getWritableDatabase().delete(TableSpam.TABLE_NAME, selection, null);
