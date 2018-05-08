@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
         public void onClick(View view) {
             String userSpamNumberInput = spamNumberEditText.getText().toString();
             Log.d(TAG, "The spam number is " + userSpamNumberInput);
-            if (!userSpamNumberInput.equalsIgnoreCase("")) {
+            if (Utils.validateUserInput(userSpamNumberInput)) {
                 Log.d(TAG, "User Entered Spam Number Starts With " + userSpamNumberInput);
                 new DatabaseHelper(getApplicationContext()).addSpamNumber(userSpamNumberInput);
                 mAdaptor.add(userSpamNumberInput);
