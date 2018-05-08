@@ -26,6 +26,8 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private Adapter mAdaptor;
 
+    private DatabaseHelper databaseHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
                 DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-        mAdaptor = new Adapter(MainActivity.this, new DatabaseHelper(getApplicationContext()).getAllSpamNumbers());
+
+        databaseHelper = new DatabaseHelper(getApplicationContext());
+        mAdaptor = new Adapter(MainActivity.this, this.databaseHelper.getAllSpamNumbers());
 
         recyclerView.setAdapter(mAdaptor);
     }
@@ -107,9 +111,9 @@ public class MainActivity extends AppCompatActivity {
             String userSpamNumberInput = spamNumberEditText.getText().toString();
             Log.d(TAG, "The spam number is " + userSpamNumberInput);
             if (Utils.validateUserInput(userSpamNumberInput)
-                    && !new DatabaseHelper(getApplicationContext()).doesUserInputExistsInDB(userSpamNumberInput)) {
+                    && databaseHelper.doesUserInputExistsInDB(userSpamNumberInput)) {
                 Log.d(TAG, "User Entered Spam Number Starts With " + userSpamNumberInput);
-                new DatabaseHelper(getApplicationContext()).addSpamNumber(userSpamNumberInput);
+                databaseHelper.addSpamNumber(userSpamNumberInput);
                 mAdaptor.add(userSpamNumberInput);
                 spamNumberEditText.setText("");
             }
@@ -130,7 +134,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new DatabaseHelper(getApplicationContext()).deleteAllSpamNumbers();
+                        databaseHelper.deleteAllSpamNumbers();
                         mAdaptor.clear();
                     }
                 })
