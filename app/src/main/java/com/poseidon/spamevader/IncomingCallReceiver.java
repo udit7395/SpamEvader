@@ -52,8 +52,8 @@ public class IncomingCallReceiver extends BroadcastReceiver {
         Notification notificationCompat = new NotificationCompat.Builder(context, Constants.BLOCKED_NOTIFICATION_CHANNEL_ID)
                 .setContentTitle("BlockedCall From")
                 .setContentText(incomingNumber)
-                .setSmallIcon(R.drawable.announcement_black)
-                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.announcement_black))
+                .setSmallIcon(R.drawable.notify)
+                .setLargeIcon(BitmapFactory.decodeResource(context.getResources(), R.drawable.notify))
                 .build();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
