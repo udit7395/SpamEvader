@@ -94,7 +94,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        new DatabaseHelper(activity).deleteSingle(listBlockNumbers.get(position));
+                        DatabaseHelper.getInstance(activity).deleteSingle(listBlockNumbers.get(position));
                         listBlockNumbers.remove(listBlockNumbers.get(position));
                         notifyItemRemoved(position);
                     }

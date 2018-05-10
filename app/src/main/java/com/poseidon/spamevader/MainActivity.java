@@ -67,8 +67,8 @@ public class MainActivity extends AppCompatActivity {
                 DividerItemDecoration.VERTICAL));
         recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
 
-        databaseHelper = new DatabaseHelper(getApplicationContext());
-        mAdaptor = new Adapter(MainActivity.this, this.databaseHelper.getAllSpamNumbers());
+        databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
+        mAdaptor = new Adapter(MainActivity.this, databaseHelper.getAllSpamNumbers());
 
         recyclerView.setAdapter(mAdaptor);
     }

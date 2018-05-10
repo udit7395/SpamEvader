@@ -76,7 +76,7 @@ public class IncomingCallReceiver extends BroadcastReceiver {
 
     private boolean isASpamCall(Context context, String incomingNumber) {
         boolean isASpamCall = false;
-        final ArrayList<String> allSpamNumbers = new DatabaseHelper(context).getAllSpamNumbers();
+        final ArrayList<String> allSpamNumbers = DatabaseHelper.getInstance(context).getAllSpamNumbers();
         for (int index = 0; index < allSpamNumbers.size(); index++) {
             if (incomingNumber.startsWith("+" + allSpamNumbers.get(index))) {
                 isASpamCall = true;
