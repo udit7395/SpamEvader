@@ -31,9 +31,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return instance;
     }
 
-    private static final class TableSpam {
+    protected static final class TableSpam {
 
-        private static final String TABLE_NAME = "spam";
+        public static final String TABLE_NAME = "spam";
 
         private static final String _ID = "_id";
         private static final String NUMBER = "number";
