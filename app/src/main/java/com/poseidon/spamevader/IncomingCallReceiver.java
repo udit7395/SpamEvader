@@ -13,7 +13,6 @@ import android.util.Log;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 
 public class IncomingCallReceiver extends BroadcastReceiver {
 
@@ -28,7 +27,7 @@ public class IncomingCallReceiver extends BroadcastReceiver {
             if (incomingNumber != null) {
                 TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-                if (isASpamCall(context, incomingNumber)) {
+                if (Utils.isASpamCall(context, incomingNumber)) {
                     try {
                         Log.d(TAG, "BlockedCall from: " + incomingNumber);
                         //How to end call programmatically
@@ -74,14 +73,4 @@ public class IncomingCallReceiver extends BroadcastReceiver {
         }
     }
 
-    private boolean isASpamCall(Context context, String incomingNumber) {
-        boolean isASpamCall = false;
-        final ArrayList<String> allSpamNumbers = DatabaseHelper.getInstance(context).getAllSpamNumbers();
-        for (int index = 0; index < allSpamNumbers.size(); index++) {
-            if (incomingNumber.startsWith("+" + allSpamNumbers.get(index))) {
-                isASpamCall = true;
-            }
-        }
-        return isASpamCall;
-    }
 }
