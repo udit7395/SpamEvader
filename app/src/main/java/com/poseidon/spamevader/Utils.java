@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class Utils {
 
     public static boolean validateUserInput(String userInput){
-        return userInput!= null && !userInput.isEmpty();
+        return userInput!= null && !userInput.trim().isEmpty();
     }
 
     public static boolean isASpamCall(Context context, String incomingNumber) {
