@@ -13,6 +13,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -36,6 +38,24 @@ public class MainActivity extends AppCompatActivity {
             init();
         } else {
             requestUserForPermission();
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.navigation_menu,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.action_about_us:
+                Toast.makeText(MainActivity.this, "About Us Clicked", Toast.LENGTH_SHORT).show();
+//                launchAboutUsActivity();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 
