@@ -132,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             String userSpamNumberInput = spamNumberEditText.getText().toString();
             Log.d(TAG, "The spam number is " + userSpamNumberInput);
             if (Utils.validateUserInput(userSpamNumberInput)
-                    && databaseHelper.doesUserInputExistsInDB(userSpamNumberInput)) {
+                    && !databaseHelper.doesUserInputExistsInDB(userSpamNumberInput)) {
                 Log.d(TAG, "User Entered Spam Number Starts With " + userSpamNumberInput);
                 databaseHelper.addSpamNumber(userSpamNumberInput);
                 mAdaptor.add(userSpamNumberInput);
