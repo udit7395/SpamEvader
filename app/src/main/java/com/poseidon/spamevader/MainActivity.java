@@ -3,7 +3,9 @@ package com.poseidon.spamevader;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -12,12 +14,17 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
@@ -51,12 +58,42 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_about_us:
-                Toast.makeText(MainActivity.this, "About Us Clicked", Toast.LENGTH_SHORT).show();
-//                launchAboutUsActivity();
+                showAboutUsDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void showAboutUsDialog() {
+        final LayoutInflater inflater = getLayoutInflater();
+        View alertLayout = inflater.inflate(R.layout.view_about_us, null);
+
+        TextView developerDetails = alertLayout.findViewById(R.id.developer_details);
+        developerDetails.setText(Constants.DEVELOPER_DETAILS);
+
+        TextView githubDetails = alertLayout.findViewById(R.id.github_details);
+        githubDetails.setText(Constants.GITHUB_DEVELOPER_URL);
+
+        Linkify.addLinks(githubDetails, Linkify.ALL);
+
+        TextView flatIconCredits = alertLayout.findViewById(R.id.flaticon_credits);
+        flatIconCredits.setText(Html.fromHtml(Constants.ICON_CREDIT_URL));
+        flatIconCredits.setMovementMethod(LinkMovementMethod.getInstance());
+
+        final AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        alert.setTitle("Developer Info");
+        alert.setView(alertLayout);
+        alert.setCancelable(true);
+        alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = alert.create();
+        dialog.show();
     }
 
     private void requestUserForPermission() {
