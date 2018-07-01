@@ -1,15 +1,11 @@
 package com.poseidon.spamevader;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.net.Uri;
+import android.database.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -22,47 +18,139 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    private Button submitButton;
-    private Button deleteAllButton;
-    private EditText spamNumberEditText;
-    private RecyclerView recyclerView;
-    private Adapter mAdaptor;
 
+    private LinearLayout layoutFabAdd;
+    private LinearLayout layoutFabDeleteAll;
+    private FloatingActionButton fabMenu;
+    private FloatingActionButton fabDeleteAll;
+    private FloatingActionButton fabAdd;
+    private RecyclerView recyclerView;
+    private TextView introTV;
+    private Adapter mAdaptor;
     private DatabaseHelper databaseHelper;
+
+    private boolean fabMenuExpanded = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (didUserGivePermission()) {
-            init();
+        if (Utils.didUserGivePermission(MainActivity.this)) {
+            initViews();
         } else {
-            requestUserForPermission();
+            Utils.requestUserForPermission(MainActivity.this);
         }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.navigation_menu,menu);
+        getMenuInflater().inflate(R.menu.navigation_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
+        switch (item.getItemId()) {
             case R.id.action_about_us:
                 showAboutUsDialog();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+
+    private void initViews() {
+        setContentView(R.layout.activity_main);
+
+        introTV = findViewById(R.id.intro_tv);
+        recyclerView = (RecyclerView) findViewById(R.id.stored_regex_recycler_view);
+        layoutFabDeleteAll = findViewById(R.id.layoutFabDeleteAll);
+        layoutFabAdd = findViewById(R.id.layoutFabAdd);
+        fabAdd = findViewById(R.id.fab_add);
+        fabDeleteAll = findViewById(R.id.fab_delete_all);
+        fabMenu = findViewById(R.id.fab);
+
+        closeFabSubMenu();
+
+        fabMenu.setOnClickListener(fabMenuPressedListener);
+        fabAdd.setOnClickListener(fabAddPressedListener);
+        fabDeleteAll.setOnClickListener(fabDeleteAllPressedListener);
+
+        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
+                DividerItemDecoration.VERTICAL));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
+
+        databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
+        mAdaptor = new Adapter(MainActivity.this, databaseHelper.getAllSpamNumbers());
+
+        handleIntroTextViewVisibility();
+
+        recyclerView.setAdapter(mAdaptor);
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Log.d(TAG, "Got RQT CODE : " + requestCode);
+        if (requestCode == Constants.REQUEST_CODE) {
+            if (Utils.didUserGivePermission(MainActivity.this)) {
+                Log.d(TAG, "User Gave Permission");
+                initViews();
+            } else {
+                Log.d(TAG, "Permission Denied");
+                showPermissionDeniedDialogBox();
+            }
+        }
+    }
+
+    //DIALOGS
+    private void showPermissionDeniedDialogBox() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Permission Denied")
+                .setMessage("Unable to run application without Phone Permission.\nRestart the app and give permission.")
+                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        finish();
+                    }
+                })
+                .setCancelable(true);
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void userConfirmationForDeleteDialogBox() {
+        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
+                .setMessage("Are you sure you want to delete everything?")
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        databaseHelper.deleteAllSpamNumbers();
+                        mAdaptor.clear();
+                        handleIntroTextViewVisibility();
+                    }
+                })
+                .setCancelable(true)
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogInterface.dismiss();
+                    }
+                });
+
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
     }
 
     private void showAboutUsDialog() {
@@ -96,120 +184,108 @@ public class MainActivity extends AppCompatActivity {
         dialog.show();
     }
 
-    private void requestUserForPermission() {
-        ActivityCompat.requestPermissions(MainActivity.this,
-                new String[]{Manifest.permission.READ_PHONE_STATE,
-                        Manifest.permission.CALL_PHONE,
-                        Manifest.permission.MODIFY_PHONE_STATE},
-                Constants.REQUEST_CODE);
-    }
+    private void showUserInputDialog() {
+        final LayoutInflater inflater = getLayoutInflater();
+        View userInputLayout = inflater.inflate(R.layout.view_user_input, null);
 
-    private boolean didUserGivePermission() {
-        return ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(MainActivity.this,
-                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
-    }
+        final EditText userInputEditText = userInputLayout.findViewById(R.id.user_input);
 
-    private void init() {
-        setContentView(R.layout.activity_main);
-        submitButton = (Button) findViewById(R.id.submit_btn);
-        deleteAllButton = (Button) findViewById(R.id.delete_all_btn);
-        spamNumberEditText = (EditText) findViewById(R.id.edit_text_regex);
-        recyclerView = (RecyclerView) findViewById(R.id.stored_regex_recycler_view);
-
-        submitButton.setOnClickListener(submitBtnPressedListener);
-        deleteAllButton.setOnClickListener(deleteAllBtnPressedListener);
-
-        recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
-                DividerItemDecoration.VERTICAL));
-        recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false));
-
-        databaseHelper = DatabaseHelper.getInstance(getApplicationContext());
-        mAdaptor = new Adapter(MainActivity.this, databaseHelper.getAllSpamNumbers());
-
-        recyclerView.setAdapter(mAdaptor);
-    }
-
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        Log.d(TAG, "Got RQT CODE : " + requestCode);
-        if (requestCode == Constants.REQUEST_CODE) {
-            if (didUserGivePermission()) {
-                Log.d(TAG, "User Gave Permission");
-                init();
-            } else {
-                Log.d(TAG, "Permission Denied");
-                showPermissionDeniedDialogBox();
+        final AlertDialog.Builder inputDialog = new AlertDialog.Builder(this);
+        inputDialog.setMessage("Add SpamNumber To Be Blocked");
+        inputDialog.setView(userInputLayout);
+        inputDialog.setCancelable(true);
+        inputDialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (handleUserInput(userInputEditText.getText().toString())) {
+                    handleIntroTextViewVisibility();
+                    dialog.dismiss();
+                }
             }
-        }
+        });
+        inputDialog.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+            }
+        });
+
+        AlertDialog dialog = inputDialog.create();
+        dialog.show();
     }
 
-    private void showPermissionDeniedDialogBox() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                .setTitle("Permission Denied")
-                .setMessage("Unable to run application without Phone Permission.\nRestart the app and give permission.")
-                .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        finish();
-                    }
-                })
-                .setCancelable(true);
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
-    }
-
-    private View.OnClickListener submitBtnPressedListener = new View.OnClickListener() {
+    //LISTENERS
+    private View.OnClickListener fabMenuPressedListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String userSpamNumberInput = spamNumberEditText.getText().toString();
-            Log.d(TAG, "The spam number is " + userSpamNumberInput);
-            if (Utils.validateUserInput(userSpamNumberInput)
-                    && !databaseHelper.doesUserInputExistsInDB(userSpamNumberInput)) {
-                Log.d(TAG, "User Entered Spam Number Starts With " + userSpamNumberInput);
-                databaseHelper.addSpamNumber(userSpamNumberInput);
-                mAdaptor.add(userSpamNumberInput);
-                spamNumberEditText.setText("");
+            Log.d(TAG, "onClick: fabMenuPressedListener");
+            if (fabMenuExpanded) {
+                closeFabSubMenu();
             } else {
-                Toast.makeText(MainActivity.this, "Input Already Exists", Toast.LENGTH_LONG).show();
+                openFabSubMenu();
             }
         }
     };
 
-    private View.OnClickListener deleteAllBtnPressedListener = new View.OnClickListener() {
+    private View.OnClickListener fabAddPressedListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            closeFabSubMenu();
+            showUserInputDialog();
+        }
+    };
+
+    private View.OnClickListener fabDeleteAllPressedListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "Delete All Btn Pressed");
+            closeFabSubMenu();
             userConfirmationForDeleteDialogBox();
         }
     };
 
-    private void userConfirmationForDeleteDialogBox() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this)
-                .setMessage("Are you sure you want to delete everything?")
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        databaseHelper.deleteAllSpamNumbers();
-                        mAdaptor.clear();
-                    }
-                })
-                .setCancelable(true)
-                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        dialogInterface.dismiss();
-                    }
-                });
 
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
+    private void openFabSubMenu() {
+        layoutFabAdd.setVisibility(View.VISIBLE);
+        layoutFabDeleteAll.setVisibility(View.VISIBLE);
+        fabMenu.setImageResource(R.drawable.ic_expand_more);
+        fabMenuExpanded = true;
     }
 
+    private void closeFabSubMenu() {
+        layoutFabAdd.setVisibility(View.INVISIBLE);
+        layoutFabDeleteAll.setVisibility(View.INVISIBLE);
+        fabMenu.setImageResource(R.drawable.ic_expand_less);
+        fabMenuExpanded = false;
+    }
 
+    private boolean handleUserInput(String userInput) {
+        boolean userInputAdded;
+        Log.d(TAG, "The spam number is " + userInput);
+        if (Utils.validateUserInput(userInput)
+                && !databaseHelper.doesUserInputExistsInDB(userInput)) {
+            Log.d(TAG, "User Entered Spam Number Starts With " + userInput);
+            databaseHelper.addSpamNumber(userInput);
+            mAdaptor.add(userInput);
+            userInputAdded = true;
+        } else {
+            if (userInput.trim().isEmpty()) {
+                Toast.makeText(MainActivity.this, "Enter Some Input", Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, "Input Already Exists", Toast.LENGTH_LONG).show();
+            }
+            userInputAdded = false;
+        }
+        return userInputAdded;
+    }
+
+    private void handleIntroTextViewVisibility() {
+        if (mAdaptor != null) {
+            if (mAdaptor.getItemCount() > 0) {
+                introTV.setVisibility(View.GONE);
+            } else {
+                introTV.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 }

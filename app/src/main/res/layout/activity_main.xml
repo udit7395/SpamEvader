@@ -1,68 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorPrimary"
     tools:context="com.poseidon.spamevader.MainActivity">
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/main_activity_ll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="16dp"
-        android:background="@drawable/rounded_corner"
+        android:background="@drawable/rounded_corner_8dp"
         android:elevation="8dp"
         android:orientation="vertical"
         android:padding="8dp"
         android:translationZ="4dp">
 
-        <EditText android:id="@+id/edit_text_regex"
-                  android:layout_width="match_parent"
-                  android:layout_height="40dp"
-                  android:focusedByDefault="false"
-                  android:hint="Enter the initial pattern eg 911401, 91120"
-                  android:inputType="number"/>
-
-        <LinearLayout android:layout_width="match_parent"
-                      android:layout_height="45dp"
-                      android:layout_marginEnd="10dp"
-                      android:layout_marginStart="10dp"
-                      android:orientation="horizontal"
-                      android:weightSum="1">
-
-            <Button android:id="@+id/delete_all_btn"
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginEnd="10dp"
-                    android:layout_weight="0.5"
-                    android:text="Delete All"/>
-
-
-            <Button android:id="@+id/submit_btn"
-                    android:layout_width="150dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:layout_weight="0.5"
-                    android:text="SUBMIT"/>
-
-        </LinearLayout>
-
-        <View xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="1dp"
-              android:layout_marginBottom="4dp"
-              android:layout_marginTop="4dp"
-              android:background="#A9A9A9"/>
+        <TextView
+            android:id="@+id/intro_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Click on the Floating Button to get started"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/stored_regex_recycler_view"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_below="@id/intro_tv"
             android:layout_marginEnd="10dp"
             android:layout_marginStart="10dp"/>
 
-    </LinearLayout>
+        <LinearLayout
+            android:id="@+id/layoutFabAdd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fab"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="100dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginEnd="4dp"
+                         android:layout_marginStart="4dp"
+                         android:background="@drawable/rounded_corner_4dp"
+                         android:elevation="4dp">
+
+                <TextView
+                    android:id="@+id/cvtSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Add"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textStyle="bold"/>
+
+            </FrameLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_add"
+                app:backgroundTint="@android:color/holo_green_light"
+                app:elevation="0dp"
+                app:fabSize="mini"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutFabDeleteAll"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/fab"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:layout_marginBottom="50dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <FrameLayout android:layout_width="wrap_content"
+                         android:layout_height="wrap_content"
+                         android:layout_marginEnd="4dp"
+                         android:layout_marginStart="4dp"
+                         android:background="@drawable/rounded_corner_4dp"
+                         android:elevation="4dp">
+
+                <TextView
+                    android:id="@+id/tv_delete_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="4dp"
+                    android:text="Delete All"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textStyle="bold"/>
+            </FrameLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_delete_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/delete_black"
+                app:backgroundTint="@android:color/holo_green_light"
+                app:elevation="0dp"
+                app:fabSize="mini"/>
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/stored_regex_recycler_view"
+            android:layout_alignParentEnd="true"
+            android:layout_gravity="bottom|end"
+            android:clickable="true"
+            android:focusable="true"
+            android:src="@drawable/ic_expand_less"
+            app:backgroundTint="@android:color/holo_green_light"
+            app:elevation="0dp"
+            app:fabSize="mini"/>
+    </RelativeLayout>
+
 
 </FrameLayout>
