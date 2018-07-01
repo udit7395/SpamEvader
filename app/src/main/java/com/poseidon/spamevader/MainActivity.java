@@ -2,7 +2,6 @@ package com.poseidon.spamevader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.database.Observable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -18,6 +17,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView introTV;
     private Adapter mAdaptor;
     private DatabaseHelper databaseHelper;
+    private Animation fabOpen, fabClose, fabClockWiseRotation, fabAntiClockWiseRotation;
 
     private boolean fabMenuExpanded = false;
 
@@ -72,17 +74,24 @@ public class MainActivity extends AppCompatActivity {
 
         introTV = findViewById(R.id.intro_tv);
         recyclerView = (RecyclerView) findViewById(R.id.stored_regex_recycler_view);
+
         layoutFabDeleteAll = findViewById(R.id.layoutFabDeleteAll);
+        layoutFabDeleteAll.setVisibility(View.GONE);
         layoutFabAdd = findViewById(R.id.layoutFabAdd);
+        layoutFabAdd.setVisibility(View.GONE);
+
         fabAdd = findViewById(R.id.fab_add);
         fabDeleteAll = findViewById(R.id.fab_delete_all);
         fabMenu = findViewById(R.id.fab);
 
-        closeFabSubMenu();
+        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
+        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
+        fabClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clock_wise);
+        fabAntiClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anti_clock_wise);
 
         fabMenu.setOnClickListener(fabMenuPressedListener);
-        fabAdd.setOnClickListener(fabAddPressedListener);
-        fabDeleteAll.setOnClickListener(fabDeleteAllPressedListener);
+        layoutFabAdd.setOnClickListener(fabAddPressedListener);
+        layoutFabDeleteAll.setOnClickListener(fabDeleteAllPressedListener);
 
         recyclerView.addItemDecoration(new DividerItemDecoration(getApplicationContext(),
                 DividerItemDecoration.VERTICAL));
@@ -246,17 +255,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void openFabSubMenu() {
+        fabMenuExpanded = true;
         layoutFabAdd.setVisibility(View.VISIBLE);
         layoutFabDeleteAll.setVisibility(View.VISIBLE);
-        fabMenu.setImageResource(R.drawable.ic_expand_more);
-        fabMenuExpanded = true;
+        animateFabMenu();
     }
 
     private void closeFabSubMenu() {
+        fabMenuExpanded = false;
+        animateFabMenu();
         layoutFabAdd.setVisibility(View.INVISIBLE);
         layoutFabDeleteAll.setVisibility(View.INVISIBLE);
-        fabMenu.setImageResource(R.drawable.ic_expand_less);
-        fabMenuExpanded = false;
+    }
+
+    private void animateFabMenu() {
+        if (fabMenuExpanded) {
+            fabMenu.startAnimation(fabClockWiseRotation);
+            layoutFabDeleteAll.startAnimation(fabOpen);
+            layoutFabAdd.startAnimation(fabOpen);
+        } else {
+            layoutFabAdd.startAnimation(fabClose);
+            layoutFabDeleteAll.startAnimation(fabClose);
+            fabMenu.startAnimation(fabAntiClockWiseRotation);
+        }
     }
 
     private boolean handleUserInput(String userInput) {
