@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">SpamEvader</string>
+    <string name="intro_text">Click on this Button to get started</string>
 </resources>

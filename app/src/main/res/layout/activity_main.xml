@@ -25,7 +25,11 @@
             android:layout_height="wrap_content"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
-            android:text="Click on the Floating Button to get started"/>
+            android:fontFamily="cursive"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:text="@string/intro_text"
+            android:textSize="50sp"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/stored_regex_recycler_view"
