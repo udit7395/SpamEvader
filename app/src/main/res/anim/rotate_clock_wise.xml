@@ -3,7 +3,7 @@
      android:fillAfter="true">
 
     <rotate
-        android:duration="@android:integer/config_mediumAnimTime"
+        android:duration="@android:integer/config_longAnimTime"
         android:fromDegrees="0"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator"
         android:pivotX="50%"

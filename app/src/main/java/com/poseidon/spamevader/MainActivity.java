@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView introTV;
     private Adapter mAdaptor;
     private DatabaseHelper databaseHelper;
-    private Animation fabOpen, fabClose, fabClockWiseRotation, fabAntiClockWiseRotation;
+    private Animation fabOpen, fabClose, fabClockWiseRotation, fabAntiClockWiseRotation, slideInFromBottomToTop, slideOutFromTopToBottom;
 
     private boolean fabMenuExpanded = false;
 
@@ -88,6 +88,8 @@ public class MainActivity extends AppCompatActivity {
         fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fabClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clock_wise);
         fabAntiClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anti_clock_wise);
+        slideInFromBottomToTop = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom_to_top);
+        slideOutFromTopToBottom = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_out_from_top_to_bottom);
 
         fabMenu.setOnClickListener(fabMenuPressedListener);
         layoutFabAdd.setOnClickListener(fabAddPressedListener);
@@ -259,10 +261,12 @@ public class MainActivity extends AppCompatActivity {
         layoutFabAdd.setVisibility(View.VISIBLE);
         layoutFabDeleteAll.setVisibility(View.VISIBLE);
         animateFabMenu();
+        handleFabLayoutsClickAbility();
     }
 
     private void closeFabSubMenu() {
         fabMenuExpanded = false;
+        handleFabLayoutsClickAbility();
         animateFabMenu();
         layoutFabAdd.setVisibility(View.INVISIBLE);
         layoutFabDeleteAll.setVisibility(View.INVISIBLE);
@@ -271,11 +275,11 @@ public class MainActivity extends AppCompatActivity {
     private void animateFabMenu() {
         if (fabMenuExpanded) {
             fabMenu.startAnimation(fabClockWiseRotation);
-            layoutFabDeleteAll.startAnimation(fabOpen);
-            layoutFabAdd.startAnimation(fabOpen);
+            layoutFabDeleteAll.startAnimation(slideInFromBottomToTop);
+            layoutFabAdd.startAnimation(slideInFromBottomToTop);
         } else {
-            layoutFabAdd.startAnimation(fabClose);
-            layoutFabDeleteAll.startAnimation(fabClose);
+            layoutFabAdd.startAnimation(slideOutFromTopToBottom);
+            layoutFabDeleteAll.startAnimation(slideOutFromTopToBottom);
             fabMenu.startAnimation(fabAntiClockWiseRotation);
         }
     }
@@ -307,6 +311,16 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 introTV.setVisibility(View.VISIBLE);
             }
+        }
+    }
+
+    private void handleFabLayoutsClickAbility() {
+        if (fabMenuExpanded) {
+            layoutFabDeleteAll.setClickable(true);
+            layoutFabAdd.setClickable(true);
+        } else {
+            layoutFabDeleteAll.setClickable(true);
+            layoutFabAdd.setClickable(true);
         }
     }
 }
