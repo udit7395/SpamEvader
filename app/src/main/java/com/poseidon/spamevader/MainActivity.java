@@ -31,13 +31,11 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout layoutFabAdd;
     private LinearLayout layoutFabDeleteAll;
     private FloatingActionButton fabMenu;
-    private FloatingActionButton fabDeleteAll;
-    private FloatingActionButton fabAdd;
     private RecyclerView recyclerView;
     private TextView introTV;
     private Adapter mAdaptor;
     private DatabaseHelper databaseHelper;
-    private Animation fabOpen, fabClose, fabClockWiseRotation, fabAntiClockWiseRotation, slideInFromBottomToTop, slideOutFromTopToBottom;
+    private Animation fabClockWiseRotation, fabAntiClockWiseRotation, slideInFromBottomToTop, slideOutFromTopToBottom;
 
     private boolean fabMenuExpanded = false;
 
@@ -73,19 +71,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         introTV = findViewById(R.id.intro_tv);
-        recyclerView = (RecyclerView) findViewById(R.id.stored_regex_recycler_view);
+        recyclerView = findViewById(R.id.stored_regex_recycler_view);
 
         layoutFabDeleteAll = findViewById(R.id.layoutFabDeleteAll);
         layoutFabDeleteAll.setVisibility(View.GONE);
         layoutFabAdd = findViewById(R.id.layoutFabAdd);
         layoutFabAdd.setVisibility(View.GONE);
 
-        fabAdd = findViewById(R.id.fab_add);
-        fabDeleteAll = findViewById(R.id.fab_delete_all);
         fabMenu = findViewById(R.id.fab);
 
-        fabOpen = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_open);
-        fabClose = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.fab_close);
         fabClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_clock_wise);
         fabAntiClockWiseRotation = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.rotate_anti_clock_wise);
         slideInFromBottomToTop = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.slide_in_bottom_to_top);
