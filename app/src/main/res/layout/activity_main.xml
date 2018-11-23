@@ -76,7 +76,7 @@
                 android:src="@drawable/ic_add"
                 app:backgroundTint="@android:color/holo_green_light"
                 app:elevation="0dp"
-                app:fabSize="mini"/>
+                app:fabSize="auto"/>
         </LinearLayout>
 
         <LinearLayout
@@ -114,7 +114,7 @@
                 android:src="@drawable/delete_black"
                 app:backgroundTint="@android:color/holo_green_light"
                 app:elevation="0dp"
-                app:fabSize="mini"/>
+                app:fabSize="auto"/>
         </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
@@ -129,7 +129,7 @@
             android:src="@drawable/ic_expand_less"
             app:backgroundTint="@android:color/holo_green_light"
             app:elevation="0dp"
-            app:fabSize="mini"/>
+            app:fabSize="auto"/>
     </RelativeLayout>
 
 
