@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         databaseHelper.deleteAllSpamNumbers();
                         mAdaptor.clear();
+                        layoutFabDeleteAll.setVisibility(View.GONE);
                         handleIntroTextViewVisibility();
                     }
                 })
@@ -253,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
     private void openFabSubMenu() {
         fabMenuExpanded = true;
         layoutFabAdd.setVisibility(View.VISIBLE);
-        layoutFabDeleteAll.setVisibility(View.VISIBLE);
+        handleFabDeleteLayoutVisibility(View.VISIBLE);
         animateFabMenu();
         handleFabLayoutsClickAbility();
     }
@@ -262,19 +263,35 @@ public class MainActivity extends AppCompatActivity {
         fabMenuExpanded = false;
         handleFabLayoutsClickAbility();
         animateFabMenu();
-        layoutFabAdd.setVisibility(View.INVISIBLE);
-        layoutFabDeleteAll.setVisibility(View.INVISIBLE);
+        layoutFabAdd.setVisibility(View.GONE);
+        handleFabDeleteLayoutVisibility(View.GONE);
     }
 
     private void animateFabMenu() {
         if (fabMenuExpanded) {
             fabMenu.startAnimation(fabClockWiseRotation);
-            layoutFabDeleteAll.startAnimation(slideInFromBottomToTop);
+            handleFabDeleteLayoutAnimation(slideInFromBottomToTop);
             layoutFabAdd.startAnimation(slideInFromBottomToTop);
         } else {
             layoutFabAdd.startAnimation(slideOutFromTopToBottom);
-            layoutFabDeleteAll.startAnimation(slideOutFromTopToBottom);
+            handleFabDeleteLayoutAnimation(slideOutFromTopToBottom);
             fabMenu.startAnimation(fabAntiClockWiseRotation);
+        }
+    }
+
+    private void handleFabDeleteLayoutVisibility(int visibility) {
+        if (databaseHelper.getAllSpamNumbers().size() > 0) {
+            layoutFabDeleteAll.setVisibility(visibility);
+        } else {
+            layoutFabDeleteAll.setVisibility(View.GONE);
+        }
+    }
+
+    private void handleFabDeleteLayoutAnimation(Animation animation) {
+        if (layoutFabDeleteAll.getVisibility() == View.VISIBLE) {
+            layoutFabDeleteAll.startAnimation(animation);
+        } else {
+            layoutFabDeleteAll.setAnimation(null);
         }
     }
 
@@ -313,8 +330,8 @@ public class MainActivity extends AppCompatActivity {
             layoutFabDeleteAll.setClickable(true);
             layoutFabAdd.setClickable(true);
         } else {
-            layoutFabDeleteAll.setClickable(true);
-            layoutFabAdd.setClickable(true);
+            layoutFabDeleteAll.setClickable(false);
+            layoutFabAdd.setClickable(false);
         }
     }
 }
