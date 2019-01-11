@@ -20,20 +20,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private final String TAG = DatabaseHelper.class.getName();
     private static DatabaseHelper instance = null;
 
-    public DatabaseHelper(Context context) {
+    private DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
-    public static DatabaseHelper getInstance(Context context) {
+    static DatabaseHelper getInstance(Context context) {
         if (instance == null) {
             instance = new DatabaseHelper(context.getApplicationContext());
         }
         return instance;
     }
 
-    protected static final class TableSpam {
+    static final class TableSpam {
 
-        public static final String TABLE_NAME = "spam";
+        static final String TABLE_NAME = "spam";
 
         private static final String _ID = "_id";
         private static final String NUMBER = "number";
@@ -54,7 +54,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public ArrayList<String> getAllSpamNumbers() {
+    ArrayList<String> getAllSpamNumbers() {
         ArrayList<String> spamNumbers = new ArrayList<>();
 
         Cursor cursor = getWritableDatabase().rawQuery("SELECT " + TableSpam.NUMBER + " FROM " + TableSpam.TABLE_NAME +
@@ -71,13 +71,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return spamNumbers;
     }
 
-    public void addSpamNumber(String spamNumber) {
+    void addSpamNumber(String spamNumber) {
         ContentValues contentValues = new ContentValues();
         contentValues.put(TableSpam.NUMBER, spamNumber);
         getWritableDatabase().insert(TableSpam.TABLE_NAME, null, contentValues);
     }
 
-    public void deleteAllSpamNumbers() {
+    void deleteAllSpamNumbers() {
         getWritableDatabase().delete(TableSpam.TABLE_NAME, null, null);
     }
 
@@ -96,7 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return _Ids.get(0);
     }
 
-    public boolean doesUserInputExistsInDB(String userInput){
+    boolean doesUserInputExistsInDB(String userInput){
         boolean doesUserInputExistsInDB = false;
 
         String selection = TableSpam.NUMBER + "='" + userInput + "'";
@@ -113,7 +113,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return doesUserInputExistsInDB;
     }
 
-    public void deleteSingle(String spamNumber) {
+    void deleteSingle(String spamNumber) {
         String selection = TableSpam.NUMBER + " = '" + spamNumber + "'";
         int status = getWritableDatabase().delete(TableSpam.TABLE_NAME, selection, null);
         Log.d(TAG, "Status : " + status);
