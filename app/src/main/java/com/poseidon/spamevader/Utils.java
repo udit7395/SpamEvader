@@ -30,7 +30,8 @@ public class Utils {
         ActivityCompat.requestPermissions(activity,
                 new String[]{Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.CALL_PHONE,
-                        Manifest.permission.MODIFY_PHONE_STATE},
+                        Manifest.permission.MODIFY_PHONE_STATE,
+                        Manifest.permission.READ_CALL_LOG},
                 Constants.REQUEST_CODE);
     }
 
@@ -38,6 +39,8 @@ public class Utils {
         return ContextCompat.checkSelfPermission(activity,
                 Manifest.permission.READ_PHONE_STATE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(activity,
-                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED;
+                        Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(activity,
+                        Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
     }
 }
