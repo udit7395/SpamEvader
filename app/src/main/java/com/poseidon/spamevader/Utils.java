@@ -21,6 +21,7 @@ public class Utils {
         for (int index = 0; index < allSpamNumbers.size(); index++) {
             if (incomingNumber.startsWith(allSpamNumbers.get(index))) {
                 isASpamCall = true;
+                break;
             }
         }
         return isASpamCall;
