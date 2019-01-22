@@ -19,7 +19,7 @@ public class Utils {
         boolean isASpamCall = false;
         final ArrayList<String> allSpamNumbers = DatabaseHelper.getInstance(context).getAllSpamNumbers();
         for (int index = 0; index < allSpamNumbers.size(); index++) {
-            if (incomingNumber.startsWith("+" + allSpamNumbers.get(index))) {
+            if (incomingNumber.startsWith(allSpamNumbers.get(index))) {
                 isASpamCall = true;
             }
         }

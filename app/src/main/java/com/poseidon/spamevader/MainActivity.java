@@ -194,6 +194,7 @@ public class MainActivity extends AppCompatActivity {
         final LayoutInflater inflater = getLayoutInflater();
         View userInputLayout = inflater.inflate(R.layout.view_user_input, null);
 
+        final EditText countryCodeEditText = userInputLayout.findViewById(R.id.country_code_input);
         final EditText userInputEditText = userInputLayout.findViewById(R.id.user_input);
 
         final AlertDialog.Builder inputDialog = new AlertDialog.Builder(this);
@@ -203,7 +204,11 @@ public class MainActivity extends AppCompatActivity {
         inputDialog.setPositiveButton("SUBMIT", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                if (handleUserInput(userInputEditText.getText().toString())) {
+                if (!Utils.validateUserInput(userInputEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "User Input cannot be empty", Toast.LENGTH_LONG).show();
+                } else if (!Utils.validateUserInput(countryCodeEditText.getText().toString())) {
+                    Toast.makeText(MainActivity.this, "Country Code cannot be empty", Toast.LENGTH_LONG).show();
+                } else if (handleUserInput(countryCodeEditText.getText().toString() + userInputEditText.getText().toString())) {
                     handleIntroTextViewVisibility();
                     dialog.dismiss();
                 }
@@ -298,11 +303,10 @@ public class MainActivity extends AppCompatActivity {
     private boolean handleUserInput(String userInput) {
         boolean userInputAdded;
         Log.d(TAG, "The spam number is " + userInput);
-        if (Utils.validateUserInput(userInput)
-                && !databaseHelper.doesUserInputExistsInDB(userInput)) {
+        if (!databaseHelper.doesUserInputExistsInDB("+" + userInput)) {
             Log.d(TAG, "User Entered Spam Number Starts With " + userInput);
-            databaseHelper.addSpamNumber(userInput);
-            mAdaptor.add(userInput);
+            databaseHelper.addSpamNumber("+" + userInput);
+            mAdaptor.add("+" + userInput);
             userInputAdded = true;
         } else {
             if (userInput.trim().isEmpty()) {
