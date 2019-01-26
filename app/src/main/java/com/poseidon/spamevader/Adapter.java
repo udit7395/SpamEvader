@@ -3,6 +3,8 @@ package com.poseidon.spamevader;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,6 +99,7 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
                         DatabaseHelper.getInstance(activity).deleteSingle(listBlockNumbers.get(position));
                         listBlockNumbers.remove(listBlockNumbers.get(position));
                         notifyItemRemoved(position);
+                        broadcastUserRemovedEntry(activity);
                     }
                 })
                 .setCancelable(true)
@@ -109,5 +112,10 @@ public class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
+    }
+
+    public void broadcastUserRemovedEntry(Activity activity){
+        Intent intent = new Intent(Constants.ACTION_USER_DELETED_ENTRY);
+        LocalBroadcastManager.getInstance(activity).sendBroadcast(intent);
     }
 }

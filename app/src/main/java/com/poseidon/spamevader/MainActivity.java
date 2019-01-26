@@ -1,10 +1,15 @@
 package com.poseidon.spamevader;
 
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
@@ -50,6 +55,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            unregisterReceiver(receiver);
+        } catch (Exception ignore) {
+        }
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.navigation_menu, menu);
         return true;
@@ -69,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
         setContentView(R.layout.activity_main);
+        registerLocalBroadcastReceiver();
 
         introTV = findViewById(R.id.intro_tv);
         recyclerView = findViewById(R.id.stored_regex_recycler_view);
@@ -338,4 +353,17 @@ public class MainActivity extends AppCompatActivity {
             layoutFabAdd.setClickable(false);
         }
     }
+
+    private void registerLocalBroadcastReceiver() {
+        LocalBroadcastManager localBroadcastManager = LocalBroadcastManager.getInstance(getApplicationContext());
+        localBroadcastManager.registerReceiver(receiver, new IntentFilter(Constants.ACTION_USER_DELETED_ENTRY));
+    }
+
+    private BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            handleIntroTextViewVisibility();
+        }
+    };
+
 }
