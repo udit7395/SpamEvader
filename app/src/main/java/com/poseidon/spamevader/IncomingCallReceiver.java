@@ -22,7 +22,8 @@ public class IncomingCallReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
+        if (TelephonyManager.EXTRA_STATE_RINGING.equalsIgnoreCase(intent.getStringExtra(TelephonyManager.EXTRA_STATE)) &&
+                intent.hasExtra(TelephonyManager.EXTRA_INCOMING_NUMBER)) {
             String incomingNumber = intent.getExtras().getString(TelephonyManager.EXTRA_INCOMING_NUMBER);
             Log.d(TAG, "Incoming Number: " + incomingNumber);
 
