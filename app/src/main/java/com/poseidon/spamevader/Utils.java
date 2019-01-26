@@ -32,7 +32,9 @@ public class Utils {
                 new String[]{Manifest.permission.READ_PHONE_STATE,
                         Manifest.permission.CALL_PHONE,
                         Manifest.permission.MODIFY_PHONE_STATE,
-                        Manifest.permission.READ_CALL_LOG},
+                        Manifest.permission.READ_CALL_LOG,
+                        Manifest.permission.PROCESS_OUTGOING_CALLS,
+                        Manifest.permission.ANSWER_PHONE_CALLS},
                 Constants.REQUEST_CODE);
     }
 
@@ -42,6 +44,10 @@ public class Utils {
                 ContextCompat.checkSelfPermission(activity,
                         Manifest.permission.CALL_PHONE) == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(activity,
-                        Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED;
+                        Manifest.permission.READ_CALL_LOG) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(activity,
+                        Manifest.permission.PROCESS_OUTGOING_CALLS) == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(activity,
+                        Manifest.permission.ANSWER_PHONE_CALLS) == PackageManager.PERMISSION_GRANTED;
     }
 }

@@ -7,7 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
+import android.telecom.TelecomManager;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -32,9 +34,13 @@ public class IncomingCallReceiver extends BroadcastReceiver {
                         Log.d(TAG, "BlockedCall from: " + incomingNumber);
                         //How to end call programmatically
                         //https://stackoverflow.com/questions/18065144/end-call-in-android-programmatically
-                        Method method = telephonyManager.getClass().getMethod("endCall", null);
-                        method.invoke(telephonyManager);
-
+                        if(android.os.Build.VERSION.SDK_INT < Build.VERSION_CODES.P) {
+                            Method method = telephonyManager.getClass().getMethod("endCall", null);
+                            method.invoke(telephonyManager);
+                        } else {
+                            TelecomManager tm = (TelecomManager) context.getSystemService(Context.TELECOM_SERVICE);
+                            tm.endCall();
+                        }
                         notifyUser(context, incomingNumber);
                     } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException e) {
                         e.printStackTrace();
