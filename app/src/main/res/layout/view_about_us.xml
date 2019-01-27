@@ -31,15 +31,6 @@
         android:gravity="center"
         android:text="Github Details"/>
 
-    <TextView
-        android:id="@+id/citation_images_google"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_margin="2dp"
-        android:gravity="center"
-        android:text="Material Icons from Google"/>
-
     <TextView android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:layout_gravity="center"

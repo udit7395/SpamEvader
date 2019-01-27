@@ -179,12 +179,12 @@ public class MainActivity extends AppCompatActivity {
         View alertLayout = inflater.inflate(R.layout.view_about_us, null);
 
         TextView developerDetails = alertLayout.findViewById(R.id.developer_details);
-        developerDetails.setText(Constants.DEVELOPER_DETAILS);
+        developerDetails.setText(Html.fromHtml(Constants.DEVELOPER_DETAILS));
+        developerDetails.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView githubDetails = alertLayout.findViewById(R.id.github_details);
-        githubDetails.setText(Constants.GITHUB_DEVELOPER_URL);
-
-        Linkify.addLinks(githubDetails, Linkify.ALL);
+        githubDetails.setText(Html.fromHtml(Constants.GITHUB_PROJECT_URL));
+        githubDetails.setMovementMethod(LinkMovementMethod.getInstance());
 
         TextView flatIconCredits = alertLayout.findViewById(R.id.flaticon_credits);
         flatIconCredits.setText(Html.fromHtml(Constants.ICON_CREDIT_URL));
