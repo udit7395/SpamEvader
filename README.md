@@ -18,7 +18,7 @@ I was planning to submit my app to Google Playstore once I had a basic working b
 
 - Basic Animations
 - Material Design (How to and what are the guidelines in general)  
-- Battery Optimization on Android is not implemented well. More info about it [https://dontkillmyapp.com/](here) 
+- Battery Optimization on Android is not implemented well. More info about it [here](https://dontkillmyapp.com/) 
 
 
 # Credits
