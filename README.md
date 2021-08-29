@@ -20,6 +20,9 @@ I was planning to submit my app to Google Playstore once I had a basic working b
 - Material Design (How to and what are the guidelines in general)  
 - Battery Optimization on Android is not implemented well. More info about it [here](https://dontkillmyapp.com/) 
 
+# License
+
+- Except for the App Image(check Credit section below) everthing else is MIT License 
 
 # Credits
 
