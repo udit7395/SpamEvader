@@ -27,4 +27,5 @@ I was planning to submit my app to Google Playstore once I had a basic working b
 # Credits
 
 - [tfKamran](https://github.com/tfKamran) for his help and guidance
-- App Icon made by [Freepik](\"http://www.freepik.com\" "\"Freepik\"") from [www.flaticon.com](\"https://www.flaticon.com/\" "\"Flaticon\"") is licensed by [CC 3.0 BY](\"http://creativecommons.org/licenses/by/3.0/\" "\"Creative")
+- App Icon made by [Freepik](http://www.freepik.com) from [www.flaticon.com](https://www.flaticon.com) is licensed by [CC 3.0 BY Creative](http://creativecommons.org/licenses/by/3.0/)
+
